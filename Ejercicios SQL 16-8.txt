@@ -1,0 +1,56 @@
+USE LIBRERIA
+
+
+
+--Ejercicios de Consultas de Repaso--
+--1)
+
+SELECT c.nom_cliente as 'Cliente', v.nom_vendedor 'Vendedor', f.fecha as 'Fecha'  
+FROM clientes c 
+join facturas f on C.cod_cliente = F.cod_cliente
+join vendedores v on f.cod_vendedor = V.cod_vendedor
+WHERE YEAR(f.fecha) in (2010,2017,2018,2022)
+order by f.fecha
+
+
+--2)
+
+SELECT distinct v.cod_vendedor as 'Codigo', v.nom_vendedor +' '+ v.ape_vendedor as 'Nombre y apellido',
+	v.nro_tel as 'Telefono', v.[e-mail] as 'Correo', f.nro_factura as 'Numero factura', 
+	f.fecha as 'Fecha'
+FROM vendedores v
+join facturas f on f.cod_vendedor = v.cod_vendedor
+WHERE YEAR(f.fecha) = YEAR(GETDATE()) --(del año actual)
+order by f.fecha
+
+
+--3)
+Set dateformat dmy
+
+SELECT c.nom_cliente +' '+c.ape_cliente as 'Cliente', 
+	v.nom_vendedor +' '+v.ape_vendedor  as'Vendedor', df.pre_unitario * df.cantidad as 'Importe',
+	a.descripcion as 'Articulo', f.fecha as 'Fecha'
+FROM clientes c 
+join facturas f on C.cod_cliente = F.cod_cliente
+join vendedores v on f.cod_vendedor = V.cod_vendedor
+join detalle_facturas df on f.nro_factura = df.nro_factura
+join articulos a on df.cod_articulo = a.cod_articulo
+WHERE YEAR(f.fecha) in (2016,2020) 
+AND MONTH(f.fecha) in (2,3)
+AND a.descripcion like '[a-m]%'
+order by f.fecha
+
+
+--4) incompleto
+
+SELECT c.cod_cliente as 'Código', c.nom_cliente +' '+ c.ape_cliente as 'Cliente', 
+b.barrio+' '+c.calle+' '+CHAR(c.altura) as 'Dirección'
+FROM clientes c
+join barrios b on b.cod_barrio = c.cod_barrio
+join vendedores v on v.cod_barrio = b.cod_barrio
+
+WHERE c.nom_cliente like 'c%' 
+AND c.ape_cliente like '%z' 
+AND b.barrio not like '%[n-p]%' OR (c.nro_tel is not null OR c.[e-mail] is not null)
+AND v.edad > 50
+
